@@ -136,6 +136,15 @@ def apply_neo_brutalism():
       padding: 14px;
     }}
 
+    /* Tiny color swatches (no labels) */
+    .nb-swatch {{
+      width: 16px; height: 16px; display: inline-block;
+      border: 3px solid var(--nb-stroke);
+      border-radius: 6px;
+      box-shadow: var(--nb-shadow);
+      margin-right: 6px;
+    }}
+
     /* Color legend badges in sidebar */
     .nb-badges {{
       display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; margin-bottom: 6px;
@@ -262,10 +271,13 @@ def apply_neo_brutalism():
     span[data-baseweb="tag"]:nth-child(5n+5) {{ background: var(--nb-a5) !important; color: #fff !important; }}
 
     /* Divider */
-    hr {{ border: none; border-top: 3px solid var(--nb-stroke); }}
+    hr {{
+      border: none; border-top: 3px solid var(--nb-stroke);
+    }}
     </style>
     """
     st.markdown(css, unsafe_allow_html=True)
+
 
 def neo_card_start(title: str | None = None, accent: str = "a1"):
     """Start a chunky bordered card with optional title + accent stripe."""
@@ -528,18 +540,21 @@ st.caption("Composition → Parameters with physics-aware recommendations")
 with st.sidebar:
     st.header("Bioink Composition")
     st.caption("Select all materials present in your formulation.")
-    # Accent legend
+
+    # Minimal brand palette swatches (no labels, tooltips show hex)
     st.markdown(
         """
-        <div class="nb-badges">
-          <div class="nb-badge a1">Cyan</div>
-          <div class="nb-badge a2">Magenta</div>
-          <div class="nb-badge a3">Amber</div>
-          <div class="nb-badge a4">Green</div>
-          <div class="nb-badge a5">Ink</div>
+        <div style="margin: 6px 0 10px 0;">
+          <span class="nb-swatch" title="#00E5FF" style="background: var(--nb-a1)"></span>
+          <span class="nb-swatch" title="#FF2E63" style="background: var(--nb-a2)"></span>
+          <span class="nb-swatch" title="#FFB020" style="background: var(--nb-a3)"></span>
+          <span class="nb-swatch" title="#00C853" style="background: var(--nb-a4)"></span>
+          <span class="nb-swatch" title="#111111" style="background: var(--nb-a5)"></span>
         </div>
-        """, unsafe_allow_html=True
+        """,
+        unsafe_allow_html=True
     )
+
     options_labels = sorted(list(LABEL2FLAG.keys()))
     selected_labels = st.multiselect("Materials (multi-select)", options=options_labels)
     meta_choice = ""
@@ -550,6 +565,7 @@ with st.sidebar:
     has_cells = 1 if has_cells_label == "Yes" else 0
     cells_e6 = st.number_input("Cells (e6/ml) (optional)", min_value=0.0, max_value=50.0, value=0.0, step=0.5)
     avail_needles = st.multiselect("Available Needles (µm)", options=sorted(df_all["Needle_um"].round().unique()))
+
 
 comp_q = build_comp_query(selected_labels, meta_choice, has_cells)
 
